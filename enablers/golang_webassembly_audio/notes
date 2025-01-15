@@ -1,0 +1,37 @@
+
+
+	golang code synthesizes a few seconds of audio to populate a memory buffer
+	we compile this go into a webassembly binary which then gets called from
+	the html web client which uses the Web Audio API to render this buffer into audio
+
+	separately I may beef up the golang to act as a client to receive streaming audio
+
+			____________________________________________________________
+
+
+	this js file is OS specific so run below command to
+	copy this from your golang installation into this project dir
+	so the html can use it
+
+
+cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" .   #  retrieve your local OS specific edition not mine
+
+
+	compile golang which synthesizes audio and makes itself callable
+	from javascript via webassembly
+
+
+GOOS=js GOARCH=wasm go build -o main.wasm main.go 
+
+
+	above sets up all we need ... below we spin up a http web server simply
+	to expose above code as a host port so you can rock up your browser to below URL
+	to render at site   http://localhost:8080/
+
+
+go run webserver.go    #  launch a web server simply to expose the host port to your browser
+
+
+
+
+		

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go WebAssembly Audio</title>
+</head>
+<body>
+  <h1>Go WebAssembly Audio Example</h1>
+  <p>Click the button below to generate and play audio using Go WebAssembly:</p>
+  <button id="playAudio">Play Audio</button>
+  <script src="wasm_exec.js"></script>
+  <script>
+    const go = new Go(); // From the Go WebAssembly runtime
+    WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then((result) => {
+      go.run(result.instance);
+
+      // Attach event listener to button
+      document.getElementById('playAudio').addEventListener('click', () => {
+        if (typeof goPlayAudio === "function") {
+          goPlayAudio(playAudioData);
+        } else {
+          console.error("Go function goPlayAudio is not available.");
+        }
+      });
+
+      // Function to handle audio data in the browser
+      window.playAudioData = function (data) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const buffer = audioContext.createBuffer(1, data.length, 44100);
+        const channelData = buffer.getChannelData(0);
+
+        // Normalize and copy the data from Uint8Array to Float32Array
+        for (let i = 0; i < data.length; i++) {
+          channelData[i] = (data[i] - 128) / 128.0; // Normalize byte data to [-1, 1]
+        }
+
+        // Play the audio
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start();
+      };
+    }).catch((err) => {
+      console.error("Error loading WebAssembly:", err);
+    });
+  </script>
+</body>
+</html>
+
+
