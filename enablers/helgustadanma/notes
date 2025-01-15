@@ -1,0 +1,39 @@
+
+
+	this dir has a fully self contained gRPC server and client
+
+
+	# --- first launch server ... feel free to run this on a remote box or local
+
+
+go run server.go
+
+
+	# --- if running both server and client on same box  go ahead
+	#     and ignore below export ... otherwise below cmd will
+	#	  define host IP of remote server box so client knows where it is
+
+export SERVER_PORT_GRPC_IMAGE_TO_SOUND=142.250.191.110:50051 # <-- use your IP this this sample
+
+
+	client can run in two different modes 
+
+	mode A
+		client sends a jpeg image file up to server
+		to which server will respond back to client with a wav audio file
+
+go run client.go  -mode=image -image=./client_media/Albrecht_Durer_De_Heilige_Familie_met_de_libelle.jpeg  -float=3.14 -int=42 -string="example"
+
+
+	mode B
+		client uploads a wav codec audio file to server and gets
+		in response back a jpeg image file
+
+
+go run client.go  -mode=sound -sound=./client_media/bach_three_lute_pieces_andres_segovia_mono_simple_flow.wav -another_float=2.71 -another_int=100 -another_string="another_example"
+
+
+
+
+
+

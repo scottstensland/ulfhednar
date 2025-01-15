@@ -1,0 +1,36 @@
+
+syntax = "proto3";
+
+package image_to_audio;
+
+option go_package = "./image_to_audio";
+
+
+// The service definition.
+service ImageToSoundService {
+  rpc UploadImage (ImageRequestWithMetadata) returns (SoundResponse);
+  rpc UploadSound (SoundRequestWithMetadata) returns (ImageResponse);
+}
+
+message ImageRequestWithMetadata {
+  bytes image_data = 1;
+  double some_float = 2;  // Example float64
+  int32 some_int = 3;     // Example int
+  string some_string = 4; // Example string
+}
+
+message SoundRequestWithMetadata {
+  bytes sound_data = 1;
+  double another_float = 2;  // Example float64
+  int32 another_int = 3;     // Example int
+  string another_string = 4; // Example string
+}
+
+message SoundResponse {
+  bytes sound_data = 1;
+}
+
+message ImageResponse {
+  bytes image_data = 1;
+}
+
