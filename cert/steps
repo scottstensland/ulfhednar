@@ -1,0 +1,138 @@
+
+
+https://chatgpt.com/c/678832c0-1d68-8004-bdce-ef0304633992
+
+
+	#  1   Generate the CA Key and Certificate   1 of 2
+
+
+openssl genrsa -out ca-key.pem 2048
+
+
+	#  1 Generate the CA Key and Certificate  2 of 2
+
+openssl req -x509 -new -nodes -key ca-key.pem -sha256 -days 365 -out ca-cert.pem -subj "/C=US/ST=YourState/L=YourCity/O=MandatoryFreedom/CN=StenslanDevCA"
+
+
+
+	#  2  Generate the Server Key and Certificate Signing Request (CSR)
+
+This creates the server-key.pem and server.csr files. You will then use the CA to sign the server certificate.
+
+openssl genrsa -out server-key.pem 2048
+
+
+openssl req -new -key server-key.pem -out server.csr -subj "/C=US/ST=NY/L=Syracuse/O=MandatoryFreedom/CN=localhost"
+
+
+	#  3. Sign the Server Certificate with the CA
+
+	This creates the server-cert.pem file. Include the Subject Alternative Name (SAN) in the server certificate.
+
+Create a configuration file server-ext.cnf with the following content:
+
+
+vi server-ext.cnf
+
+[ v3_ext ]
+authorityKeyIdentifier = keyid,issuer
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+IP.1 = 127.0.0.1
+
+
+	#  Sign the server certificate:
+
+openssl x509 -req -in server.csr -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial \
+  -out server-cert.pem -days 365 -sha256 -extfile server-ext.cnf -extensions v3_ext
+
+
+
+	#   4. Generate the Client Key and Certificate Signing Request (CSR)
+
+		This creates the client-key.pem and client.csr files.
+
+
+openssl genrsa -out client-key.pem 2048
+
+
+
+openssl req -new -key client-key.pem -out client.csr -subj "/C=US/ST=NY/L=Syracuse/O=MandatoryFreedom/CN=client"
+
+
+
+
+
+	#  5  Sign the Client Certificate with the CA
+
+This creates the client-cert.pem file. Include clientAuth in the certificate.
+
+Create a configuration file client-ext.cnf with the following content:
+
+
+vi client-ext.cnf
+
+[ v3_ext ]
+authorityKeyIdentifier = keyid,issuer
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = client
+
+
+
+	#    Sign the client certificate:
+
+
+
+openssl x509 -req -in client.csr -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial \
+  -out client-cert.pem -days 365 -sha256 -extfile client-ext.cnf -extensions v3_ext
+
+
+
+	#  6. Verify the Certificates
+
+	#	Verify the CA certificate:
+
+
+openssl x509 -in ca-cert.pem -noout -text
+
+
+	#  Verify the server certificate:
+
+openssl x509 -in server-cert.pem -noout -text
+
+
+	#  Verify the client certificate:
+
+openssl x509 -in client-cert.pem -noout -text
+
+
+
+
+Final Directory Structure
+
+After running these commands, your cert directory will contain:
+
+    ca-key.pem: Private key for the CA.
+    ca-cert.pem: Public certificate for the CA.
+    server-key.pem: Private key for the server.
+    server-cert.pem: Public certificate for the server.
+    client-key.pem: Private key for the client.
+    client-cert.pem: Public certificate for the client.
+
+
+
+
+
+
+
+

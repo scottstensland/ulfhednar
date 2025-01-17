@@ -1,0 +1,23 @@
+
+[ req ]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
+
+[ req_distinguished_name ]
+C = US
+ST = New York
+L = Syracuse
+O = Mandatory Freedom
+OU = Mandatory Freedom
+CN = localhost
+
+[ v3_req ]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+DNS.2 = 127.0.0.1
+

@@ -1,0 +1,26 @@
+
+
+	#  
+
+# Generate CA key and certificate
+# below prompts for password    ... for all prompts manually paste   passphrase.txt
+openssl req -new -x509 -days 365 -keyout ca-key.pem -out ca-cert.pem -subj "/CN=ca"
+
+# Generate server key and certificate signing request (CSR)
+openssl genrsa -out server-key.pem 2048
+openssl req -new -key server-key.pem -out server.csr -subj "/CN=localhost"
+
+# below prompts for password
+openssl x509 -req -days 365 -in server.csr -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem
+
+	# left off
+
+# Generate client key and certificate signing request (CSR)
+openssl genrsa -out client-key.pem 2048
+openssl req -new -key client-key.pem -out client.csr -subj "/CN=client"
+
+# below prompts for password
+openssl x509 -req -days 365 -in client.csr -CA ca-cert.pem -CAkey ca-key.pem -CAcreateserial -out client-cert.pem
+
+
+

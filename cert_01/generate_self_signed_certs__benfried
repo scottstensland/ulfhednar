@@ -1,0 +1,16 @@
+
+
+#  Generate a Passphrase File
+
+openssl rand -base64 48 > passphrase.txt
+
+# Generate the CA Key
+
+openssl genrsa -aes256 -passout file:passphrase.txt -out ca.key 2048
+
+#  Generate the CA Certificate
+
+openssl req -new -x509 -days 3650 -key ca.key -passin file:passphrase.txt -out ca.crt -subj "/C=US/ST=CA/L=Syracuse New York/O=Mandatory Freedom LLC/CN=My CA" 
+
+
+	# ---------

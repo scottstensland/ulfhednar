@@ -1,0 +1,52 @@
+
+// user.proto
+
+syntax = "proto3";
+
+package user;
+
+option go_package = "./userpb";
+
+
+import "google/protobuf/empty.proto";
+
+message User {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+}
+
+message CreateUserRequest {
+    string name = 1;
+    string email = 2;
+}
+
+message UpdateUserRequest {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+}
+
+message DeleteUserRequest {
+    string id = 1;
+}
+
+message JWTRequest {
+    string email = 1;
+}
+
+message JWTResponse {
+    string token = 1;
+    string refresh_token = 2;
+}
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (User);
+    rpc UpdateUser(UpdateUserRequest) returns (User);
+    rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty);
+    rpc GenerateJWT(JWTRequest) returns (JWTResponse);
+    rpc RefreshJWT(JWTRequest) returns (JWTResponse);
+}
+
+
+
