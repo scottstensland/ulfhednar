@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
 	"log"
 	"net"
+	"os"
 
 	pb "github.com/scottstensland/ulfhednar/enablers/helgustadanma/image_to_audio"
 
@@ -19,7 +19,7 @@ type server struct {
 // func (s *server) UploadImage(ctx context.Context, req *pb.ImageRequest) (*pb.SoundResponse, error) {
 func (s *server) UploadImage(ctx context.Context, req *pb.ImageRequestWithMetadata) (*pb.SoundResponse, error) {
 	// Same as before, just reading a static WAV file
-	soundData, err := ioutil.ReadFile("./media_server/ostrich_chick_pulses.wav") // respond to client with this sound
+	soundData, err := os.ReadFile("./media_server/ostrich_chick_pulses.wav") // respond to client with this sound
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (s *server) UploadImage(ctx context.Context, req *pb.ImageRequestWithMetada
 // func (s *server) UploadSound(ctx context.Context, req *pb.SoundRequest) (*pb.ImageResponse, error) {
 func (s *server) UploadSound(ctx context.Context, req *pb.SoundRequestWithMetadata) (*pb.ImageResponse, error) {
 	// Here you would process the sound data to generate an image. For simplicity, we'll just read a static JPEG file.
-	imageData, err := ioutil.ReadFile("./media_server/knights_templar_flag.jpeg") // respond to client with this image
+	imageData, err := os.ReadFile("./media_server/knights_templar_flag.jpeg") // respond to client with this image
 	if err != nil {
 		return nil, err
 	}
